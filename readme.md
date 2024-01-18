@@ -20,7 +20,7 @@ each node allows the user to also modify its content by
 
 the bottom left corner displays the node inspector, it displays and allow editing of the current node's properties
 
-## todo
+## to add
 
 - [ ] Node may move up and down between siblings
 - [ ] Improve HTML button output 
