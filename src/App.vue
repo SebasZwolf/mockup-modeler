@@ -40,16 +40,20 @@ const CSS = `
 
 export default defineComponent({
 	setup() {
+		let objId = 0;
 
 		const tree = reactive<t_root>({
 			t : 'root',
+			i : objId++,
 			c : [
 				{
 					t : 'hsep',
+					i : objId++,
 					c : [
 						'logo',
 						{
 							t : 'hsep',
+							i : objId++,
 							b : {
 								style : 'margin-left: auto;'
 							},
@@ -64,6 +68,7 @@ export default defineComponent({
 				},
 				{
 					t : 'hsep',
+					i : objId++,
 					b : {
 						style : 'min-height: 14em;'
 					},
@@ -73,6 +78,7 @@ export default defineComponent({
 							b : {
 								style : 'flex: 1 0 0;'
 							},
+							i : objId++,
 							c : [
 								'idea','idea'
 							],
@@ -82,11 +88,13 @@ export default defineComponent({
 							b : {
 								style : 'flex: 1 0 0;'
 							},
+							i : objId++,
 							c : [],
 						},
 						{
 							t : 'vsep',
 							c : ['idea','idea'],
+								i : objId++,
 						}
 					]
 				}
@@ -109,11 +117,30 @@ export default defineComponent({
 					case 'del': {
 						path.reduce(getSubBranch, tree).c.splice(v.at, 1);
 					} break;
+					case 'mov': {
+						console.log('move', v);
+						const from = v.at;
+						const el = path.reduce(getSubBranch, tree);
+
+						if (v.dir) {
+							if (from === el.c.length - 1) 
+								return void console.log('imposible tp move outside array');
+						
+							[el.c[from], el.c[from + 1]] = [el.c[from + 1], el.c[from]]
+						}
+						else {
+							if (from === 0) 
+								return void console.log('imposible tp move outside array');
+
+							[el.c[from], el.c[from - 1]] = [el.c[from - 1], el.c[from]]
+						}
+					} break;
 					case 'add': {
 						path.reduce(getSubBranch, tree).c.push(typeof v === 'string' ? v : {
 							c : v.c,
 							t : v.t,
 							b : v.b,
+							i : objId++,
 						});
 					} break;
 					case 'put': {
@@ -169,7 +196,7 @@ export default defineComponent({
 			</div>
 		</div>
 		<div>
-			<div ref="treeRoot" tabindex="0" style="font-size: 75%; display: block; overflow: hidden; width: 320px; height: 480px; resize: both; border: 1px solid black;">
+			<div ref="treeRoot" tabindex="0" style="font-size: 75%; display: block; overflow: hidden; width: 320px; height: 480px; resize: both;">
 				<Tree :branch="tree" />
 			</div>
 		</div>
@@ -232,14 +259,21 @@ export default defineComponent({
 	}
 
 	& > div:last-child {
-		background-color: #242f26;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		border-left: 1px solid white;
+		& {
+			background-color: #242f26;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-left: 1px solid white;
+			
+			overflow: hidden;
+			color : black;
+		}
 
-		overflow: hidden;
-		color : black;
+		& > div {
+			padding : .25rem;
+			border: 1px dashed white;
+		}
 	}
 }
 

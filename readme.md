@@ -22,7 +22,7 @@ the bottom left corner displays the node inspector, it displays and allow editin
 
 ## to add
 
-- [ ] Node may move up and down between siblings
+- [X] Node may move up and down between siblings
 - [ ] Improve HTML button output 
 - [ ] Highligh the current node in inspector and map
 - ...

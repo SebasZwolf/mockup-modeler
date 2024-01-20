@@ -16,12 +16,13 @@ type t_c_flow = Extract<e_element,'vsep'|'hsep'>;
 type t_c_size = Extract<e_element,'cont'>;
 
 export type t_branch = string | (
-	{ b? :  Record<string, unknown> } & ({ t : t_c_flow, c : t_branch[] } | { t : t_c_size, c : [t_branch] })
+	{ i : number, b? :  Record<string, unknown> } & ({ t : t_c_flow, c : t_branch[] } | { t : t_c_size, c : [t_branch] })
 );
 export type t_root = { 
 	t : Extract<e_element,'root'>,
 	c : t_branch[],
 	b?: never,
+	i : number,
 };
 
 const Tree = defineComponent({
@@ -38,10 +39,10 @@ const Tree = defineComponent({
 			if ( typeof p.branch === 'string' ) 
 				return h('span', { class : 'text' }, p.branch);
 
-			const { c, t, b = null } = p.branch;
+			const { c, t, b = null, i } = p.branch;
 
 			return h(presets[t], b, {
-				default : () => c.map( branch => h(Tree, { branch }))
+				default : () => c.map( branch => h(Tree, { branch, key : i }))
 			});
 		}
 	}
@@ -58,7 +59,7 @@ export default Tree;
 		gap : 2px;
 		height: 100%;
 		
-		background-color: beige;
+		background-color: #ddc;
 	}
 
 	& div {
@@ -78,7 +79,7 @@ export default Tree;
 
 .vsep{
 	flex-direction: column;
-	--border-color:lime;
+	--border-color:teal;
 }
 .hsep{
 	flex-direction: row;
