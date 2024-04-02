@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 
 import { onMounted, reactive, ref, shallowReactive, shallowRef } from 'vue';
-
-import { default as Recursion, type recursed } from './components/Recursion.vue';
+import { default as Recursion, type t_slotprops as recursed } from 'vue-recursion';
 import Icons from './fragments/Icons.vue'
 
 import type { 
@@ -142,10 +141,12 @@ const inspector = {
 		const self : HTMLElement = el.closest('.inspector')!;
 		const parent : HTMLElement = self.parentElement!.closest('.inspector')!;
 
-		t[1]!.splice(i, 1);
-		parent.querySelector<HTMLInputElement>(`input[type=radio]`)!.checked = true;
+		const [old] = t[1]!.splice(i, 1);
 
-		selection.value = null;
+		if (old[0].key === selection.value?.key) {
+			parent.querySelector<HTMLInputElement>(`input[type=radio]`)!.checked = true;
+			selection.value = t[0] as t_item;
+		}
 	},
 	add : (chain : number[], el : HTMLElement) => {
 		const parent = tree_navigate(chain);
@@ -184,13 +185,13 @@ const select = (data : t_item) => selection.value = data;
 		<div class="row-start-1 row-span-1 col-start-1 overflow-y-scroll p-2">
 			
 			<div class="inspector">
-				<Recursion :data="data" v-slot="{ child, children, depth, chain, data, components } : recursed<t_item>">
+				<Recursion :data="data" v-slot="{ index, children, depth, chain, data, components } : recursed<t_item>">
 
 					<NodeControl :data="data" :depth="depth" :children="children" 
 						@selection="select(data)"
 						@add="inspector.add(chain, $event)"
 						@del="inspector.del(chain, $event)"
-						@move="inspector.swap(chain, child + $event)">
+						@move="inspector.swap(chain, index + $event)">
 						<!-- <TransitionGroup tag="ul" name="list" class="flex flex-col gap-2 relative" @before-leave="leave($event)">
 							<li class="inspector w-full" v-for="c in components" :key="c.key">
 								<component :is="c" />
@@ -200,14 +201,14 @@ const select = (data : t_item) => selection.value = data;
 
 					<div v-if="children.length" class="collapse-show pl-2 pt-2 rounded-es-md">
 						<TransitionGroup tag="ul" name="list" class="flex flex-col gap-2 relative" @before-leave="leave($event as HTMLElement)">
-							<li class="inspector w-full" v-for="c in components" :key="c.key">
+							<li class="inspector w-full" v-for="c in components" :key="(c as any).key">
 								<component :is="c" />
 							</li>
 						</TransitionGroup>
 					</div>
 					
 				</Recursion>
-			</div>
+			</div>	
 
 		</div>
 		<div v-if="selection" class="row-start-2 row-span-1 col-start-1 p-2 pt-1 relative"
