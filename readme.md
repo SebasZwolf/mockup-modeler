@@ -1,3 +1,5 @@
+[![Deploy static content to Pages](https://github.com/SebasZwolf/mockup-modeler/actions/workflows/deploy-vue.yml/badge.svg)](https://github.com/SebasZwolf/mockup-modeler/actions/workflows/deploy-vue.yml)
+
 # Mockup Modeler
 
 this is a web client app that allows the user do scketch the flow of an app using vertical and horizontal containers.
